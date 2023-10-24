@@ -1,9 +1,12 @@
 ---
-- name: "add new group {{ item.group }}"
+- name: "manage required groups"
   group:
-    name: "{{ item.group | default(item.name) }}"
+    name: "{{ group }}"
     state: "{{ item.state | default('present') }}"
   when: item.name != 'root'
+  loop: "{{ item.group | d( [item.name] ) + item.groups | d([]) }}"
+  loop_control:
+    loop_var: group
 
 - name: "manage user {{ item.name }}"
   ansible.builtin.user:
