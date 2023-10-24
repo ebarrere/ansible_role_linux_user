@@ -26,4 +26,11 @@
     exclusive: "{{ item.exclusive | default('true') }}"
     state: "{{ item.state | default('present') }}"
   when: item.name != 'root' and item.sshpubkey is defined
+  register: pubkey
+
+- name: "set permissions on keyfile"
+  file:
+    path: "{{ pubkey.keyfile }}"
+    mode: "{{ item.keyfile_mode }}"
+  when: item.name != 'root' and item.keyfile_mode is defined
 ...
